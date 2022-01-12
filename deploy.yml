@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webapp-nodejs
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: webapp-nodejs
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: webapp-nodejs
+    spec:
+      containers:
+      - name: webapp-nodejs
+        image: ghcr.io/gforien/webapp-nodejs
+        imagePullPolicy: Always
+        ports:
+          - containerPort: 3000
+        resources:
+          limits:
+            cpu: "500m"
+            memory: 1G
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: webapp-nodejs
+spec:
+  selector:
+    app: webapp-nodejs
+  type: LoadBalancer
+  ports:
+    - port: 8000
+      targetPort: 3000
